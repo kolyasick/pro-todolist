@@ -25,13 +25,13 @@ const updateTask = () => {
     @mouseenter="isHover = true"
     @mouseleave="isHover = false"
     @click="updateTask"
-    class="flex items-start gap-3"
+    class="flex items-start gap-3 border border-gray-400 p-3 rounded-lg"
   >
     <span
-      class="w-5 h-5 border border-[#4b4848] rounded-full flex items-center justify-center"
+      class="w-5 h-5 border border-[#4b4848] rounded-full flex items-center justify-center mt-1"
     >
       <svg
-        :class="[{ block: isHover }, { hidden: !isHover }]"
+        :class="[{ 'block': isHover }, { 'hidden': !isHover }]"
         width="11"
         height="9"
         viewBox="0 0 11 9"
@@ -48,8 +48,8 @@ const updateTask = () => {
       </svg>
     </span>
     <div>
-      <div class="text-black text-[15px]">{{ props.task.title }}</div>
-      <p class="text-[13px] text-start">{{ props.task.description }}</p>
+      <div class="text-black text-[17px] text-start">{{ props.task.title }}</div>
+      <p class="text-[14px] text-start">{{ props.task.description }}</p>
     </div>
   </button>
 </template>
