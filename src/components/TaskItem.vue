@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { formatDate, monthNames } from "@/utils/calendarUtils";
-import type { IDayItem } from "@/date.interface";
+import type { IDayItem } from "@/types/date.type";
 import { computed, ref } from "vue";
 import CreateTaskForm from "./CreateTaskForm.vue";
 import TaskToDoItem from "./TaskToDoItem.vue";
 import { useUserStore } from "@/stores/user.store";
 
-interface Props {
+const props = defineProps<{
   date: IDayItem;
-}
-const props = defineProps<Props>();
+}>();
 const authStore = useUserStore();
 
 const isHover = ref<boolean>(false);

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { IDayItem, ITask } from "@/date.interface";
+import type { IDayItem, ITask } from "@/types/date.type";
 import { supabase } from "@/utils/supabase";
 import { useUserStore } from "./user.store";
 import { v4 as uuidv4 } from "uuid";

@@ -8,7 +8,7 @@ import {
 import type { AuthResponse, User, UserResponse } from "@supabase/supabase-js";
 import { defineStore } from "pinia";
 import { useDateStore } from "./date.store";
-import type { ITask } from "@/date.interface";
+import type { ITask } from "@/types/date.type";
 import { v4 as uuidv4 } from "uuid";
 
 interface IErrors {
@@ -102,7 +102,7 @@ export const useUserStore = defineStore("auth", {
 
         this.set(true, data.user);
         await this.getUser();
-        return router.push("/");
+        return router.push("/upcoming");
       } catch (error: any) {
         this.errors.other = "Unexpected error";
       } finally {
@@ -188,7 +188,6 @@ export const useUserStore = defineStore("auth", {
         .update({ is_done: true })
         .eq("id", task.id);
 
-        
       if (error) {
         console.log(error);
       }

@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import type { IDayItem } from "@/date.interface";
+import type { IDayItem } from "@/types/date.type";
 import { onMounted, ref } from "vue";
 import { useUserStore } from "@/stores/user.store";
 
-interface Props {
-  date: IDayItem;
-}
-
 const authStore = useUserStore();
 
-const props = defineProps<Props>();
+const props = defineProps<{
+  date: IDayItem;
+}>();
 const taskInput = ref<HTMLInputElement | null>(null);
 
 const title = ref<string>("");
@@ -46,6 +44,7 @@ onMounted(() => {
   <div class="border border-gray-300 p-4 rounded-lg shadow-sm">
     <div>
       <input
+        @keyup.enter="addTask"
         ref="taskInput"
         type="text"
         v-model="title"
@@ -56,6 +55,7 @@ onMounted(() => {
 
     <div class="mt-2">
       <input
+        @keyup.enter="addTask"
         type="text"
         v-model="description"
         placeholder="Описание"

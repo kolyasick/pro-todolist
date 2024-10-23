@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import type { ITask } from "@/date.interface";
+import type { ITask } from "@/types/date.type";
 import { ref } from "vue";
 import { useUserStore } from "@/stores/user.store";
-
-interface Props {
-  task: ITask;
-}
 
 const authStore = useUserStore();
 
 const isHover = ref<boolean>(false);
-const props = defineProps<Props>();
+const props = defineProps<{
+  task: ITask;
+}>();
 
 const clickSound = new Audio("/public/done-sound.mp3");
 

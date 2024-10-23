@@ -1,10 +1,9 @@
 <script setup lang="ts">
-interface Props {
+defineProps<{
   month: string;
   year: number;
   isDayPast: boolean;
-}
-defineProps<Props>();
+}>();
 
 const emit = defineEmits<{
   (e: "prevWeek"): void;

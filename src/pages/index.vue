@@ -9,7 +9,7 @@ import DayItem from "@/components/DayItem.vue";
 import TaskItem from "@/components/TaskItem.vue";
 
 import { monthNames } from "@/utils/calendarUtils";
-import type { IDayItem } from "@/date.interface";
+import type { IDayItem } from "@/types/date.type";
 
 const dateStore = useDateStore();
 const authStore = useUserStore();

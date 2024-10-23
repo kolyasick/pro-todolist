@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user.store";
+import SideNavMenu from "./components/SideNavMenu.vue";
 
 const authStore = useUserStore();
 
@@ -13,9 +14,15 @@ authStore.getUser();
   >
     <img class="w-20" src="/loader.svg" alt="" />
   </div>
-  <section v-else class="p-5">
-    <RouterView />
-  </section>
+
+  <main v-else :class="[authStore.status ? 'flex' : '']">
+    <section :class="[authStore.status ? 'w-1/6 bg-[#FCFAF8]' : 'w-full']">
+      <SideNavMenu v-if="authStore.status" />
+    </section>
+    <section :class="[authStore.status ? 'w-5/6' : 'w-full']">
+      <RouterView />
+    </section>
+  </main>
 </template>
 
 <style scoped></style>

@@ -5,7 +5,7 @@ import index from "./pages/index.vue";
 
 const routes = [
   { path: "/auth", component: auth },
-  { path: "/", component: index },
+  { path: "/upcoming", component: index },
 ];
 
 const router = createRouter({
@@ -17,10 +17,10 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn =
     localStorage.getItem("sb-hbybmfsifmxbzwtakvac-auth-token") ?? false;
 
-  if (to.path === "/" && !isLoggedIn) {
+  if (to.path !== "/auth" && !isLoggedIn) {
     next("/auth");
   } else if (to.path === "/auth" && isLoggedIn) {
-    next("/");
+    next("/upcoming");
   } else {
     next();
   }

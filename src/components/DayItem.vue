@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { formatDate, monthNames } from "@/utils/calendarUtils";
-import type { IDayItem } from "@/date.interface";
+import type { IDayItem } from "@/types/date.type";
 import { computed } from "vue";
 
-interface Props {
+const props = defineProps<{
   date: IDayItem;
   isCurrentDay: boolean;
-}
-const props = defineProps<Props>();
+}>();
 
 const date = computed(() => formatDate(props.date.date));
 </script>
@@ -19,7 +18,12 @@ const date = computed(() => formatDate(props.date.date));
   >
     <a
       :href="
-        '#' + date.day + '-' + (monthNames.indexOf(date.month) + 1) + '-' + date.year
+        '#' +
+        date.day +
+        '-' +
+        (monthNames.indexOf(date.month) + 1) +
+        '-' +
+        date.year
       "
     >
       {{ date.dayOfWeekShort }}
