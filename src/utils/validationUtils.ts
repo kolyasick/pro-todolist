@@ -1,42 +1,28 @@
-export function validateEmail(
-  email: string,
-  errors: { email: string | null }
-): boolean {
+export function validateEmail(email: string): null | string {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email) {
-    errors.email = "Email is required";
-    return false;
+    return "Email is required";
   }
   if (!emailPattern.test(email)) {
-    errors.email = "Invalid email address";
-    return false;
+    return "Invalid email address";
   }
-  return true;
+  return null;
 }
 
-export function validatePassword(
-  password: string,
-  errors: { password: string | null }
-): boolean {
+export function validatePassword(password: string): null | string {
   if (!password || password.length < 6 || password.length > 15) {
-    errors.password = "Password must be 6-15 characters";
-    return false;
+    return "Password must be 6-15 characters";
   }
-  return true;
+  return null;
 }
 
-export function validateName(
-  name: string,
-  errors: { name: string | null }
-): boolean {
+export function validateName(name: string): null | string {
   const namePattern = /^[a-zA-Z\s-]+$/;
   if (!name || name.length < 3) {
-    errors.name = "Name must be at least 3 characters";
-    return false;
+    return "Name must be at least 3 characters";
   }
   if (!namePattern.test(name)) {
-    errors.name = "Name can only contain latins letters, spaces, and hyphens";
-    return false;
+    return "Name can only contain latins letters, spaces, and hyphens";
   }
-  return true;
+  return null;
 }

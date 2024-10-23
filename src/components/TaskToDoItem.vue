@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { ITask } from "@/date.interface";
 import { ref } from "vue";
-import { useDateStore } from "@/stores/date.store";
+import { useUserStore } from "@/stores/user.store";
 
 interface Props {
   task: ITask;
 }
 
-const dateStore = useDateStore();
+const authStore = useUserStore();
 
 const isHover = ref<boolean>(false);
 const props = defineProps<Props>();
@@ -16,8 +16,8 @@ const clickSound = new Audio("/public/done-sound.mp3");
 
 const updateTask = () => {
   clickSound.play();
-  dateStore.updateTask(props.task)
-}
+  authStore.updateTask(props.task);
+};
 </script>
 
 <template>
@@ -31,7 +31,7 @@ const updateTask = () => {
       class="w-5 h-5 border border-[#4b4848] rounded-full flex items-center justify-center mt-1"
     >
       <svg
-        :class="[{ 'block': isHover }, { 'hidden': !isHover }]"
+        :class="[{ block: isHover }, { hidden: !isHover }]"
         width="11"
         height="9"
         viewBox="0 0 11 9"
@@ -48,7 +48,9 @@ const updateTask = () => {
       </svg>
     </span>
     <div>
-      <div class="text-black text-[17px] text-start">{{ props.task.title }}</div>
+      <div class="text-black text-[17px] text-start">
+        {{ props.task.title }}
+      </div>
       <p class="text-[14px] text-start">{{ props.task.description }}</p>
     </div>
   </button>

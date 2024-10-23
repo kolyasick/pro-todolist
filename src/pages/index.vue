@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDateStore } from "@/stores/date.store";
-import { useAuthStore } from "@/stores/auth.store";
+import { useUserStore } from "@/stores/user.store";
 import { useRouter } from "vue-router";
 import { ref, computed, watchEffect, onMounted } from "vue";
 
@@ -12,7 +12,7 @@ import { monthNames } from "@/utils/calendarUtils";
 import type { IDayItem } from "@/date.interface";
 
 const dateStore = useDateStore();
-const authStore = useAuthStore();
+const authStore = useUserStore();
 const router = useRouter();
 
 const weekOffset = ref(0);
@@ -63,27 +63,9 @@ const isCurrentDay = (day: IDayItem) => {
 const isDayPast = computed(() => {
   return weekOffset.value === 0;
 });
-
-onMounted(async () => {
-  await authStore.getUser();
-  await dateStore.getTasks();
-
-  watchEffect(() => {
-    if (!authStore.status && !authStore.isLoading) {
-      return router.push("/auth");
-    }
-  });
-});
 </script>
 
 <template>
-  <div
-    class="flex items-center justify-center h-screen z-0"
-    v-if="authStore.isLoading || dateStore.isLoading"
-  >
-    <img class="w-20" src="/loader.svg" alt="" />
-  </div>
-
   <div class="max-w-4xl mx-auto mt-14 z-10">
     <header class="sticky top-0 bg-white">
       <div>

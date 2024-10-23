@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { IDayItem } from "@/date.interface";
 import { onMounted, ref } from "vue";
-import { useDateStore } from "@/stores/date.store";
+import { useUserStore } from "@/stores/user.store";
 
 interface Props {
   date: IDayItem;
 }
 
-const dateStore = useDateStore();
+const authStore = useUserStore();
 
 const props = defineProps<Props>();
 const taskInput = ref<HTMLInputElement | null>(null);
@@ -32,9 +32,9 @@ const addTask = async () => {
   title.value = "";
   description.value = "";
 
-  await dateStore.addTask(newTitle, newDescription, props.date.date);
+  emit("close-form");
+  await authStore.addTask(newTitle, newDescription, props.date.date);
 };
-
 onMounted(() => {
   if (taskInput.value) {
     taskInput.value.focus();

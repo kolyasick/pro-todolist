@@ -19,7 +19,7 @@ const date = computed(() => formatDate(props.date.date));
   >
     <a
       :href="
-        '#' + date.day + '-' + monthNames.indexOf(date.month) + '-' + date.year
+        '#' + date.day + '-' + (monthNames.indexOf(date.month) + 1) + '-' + date.year
       "
     >
       {{ date.dayOfWeekShort }}

@@ -1,19 +1,13 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
-import { useAuthStore } from "@/stores/auth.store";
+import { useUserStore } from "@/stores/user.store";
 import { useRouter } from "vue-router";
 import LoginForm from "@/components/LoginForm.vue";
 import RegisterForm from "@/components/RegisterForm.vue";
 
-const authStore = useAuthStore();
+const authStore = useUserStore();
 const router = useRouter();
 const loginForm = ref<boolean>(true);
-
-watchEffect(() => {
-  if (authStore.status) {
-    router.push("/");
-  }
-});
 </script>
 
 <template>

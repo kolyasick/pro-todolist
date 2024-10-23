@@ -4,32 +4,29 @@ import type { IDayItem } from "@/date.interface";
 import { computed, ref } from "vue";
 import CreateTaskForm from "./CreateTaskForm.vue";
 import TaskToDoItem from "./TaskToDoItem.vue";
-import { useDateStore } from "@/stores/date.store";
-
+import { useUserStore } from "@/stores/user.store";
 
 interface Props {
   date: IDayItem;
 }
 const props = defineProps<Props>();
-const dateStore = useDateStore();
+const authStore = useUserStore();
 
 const isHover = ref<boolean>(false);
 const isFormOpen = ref<boolean>(false);
 
-
 const filteredTasks = computed(() => {
-  return dateStore.tasks.filter(
-    (task) => {
-      const taskDate = new Date(task.date); // Преобразование даты задачи в объект Date
-      return (
-        taskDate.getDate() === props.date.date.getDate() &&
-        taskDate.getMonth() === props.date.date.getMonth() &&
-        taskDate.getFullYear() === props.date.date.getFullYear()
-      );
-    }
-  );
-});
+  if (!authStore.user?.tasks) return [];
 
+  return authStore.user?.tasks.filter((task) => {
+    const taskDate = new Date(task.date);
+    return (
+      taskDate.getDate() === props.date.date.getDate() &&
+      taskDate.getMonth() === props.date.date.getMonth() &&
+      taskDate.getFullYear() === props.date.date.getFullYear()
+    );
+  });
+});
 
 const isTodayOrTomorrow = () => {
   const today = new Date();
@@ -61,14 +58,30 @@ const date = computed(() => formatDate(props.date.date));
 </script>
 
 <template>
-  <div :id="date.day + '-' + monthNames.indexOf(date.month) + '-' + date.year">
-    <div class="font-bold pb-1" :class="[{ 'border-b' : !isFormOpen, 'text-[#000000]' : isTodayOrTomorrow() === 'Сегодня ‧'}]">
+  <div
+    :id="
+      date.day + '-' + (monthNames.indexOf(date.month) + 1) + '-' + date.year
+    "
+  >
+    <div
+      class="font-bold pb-1"
+      :class="[
+        {
+          'border-b': !isFormOpen,
+          'text-[#000000]': isTodayOrTomorrow() === 'Сегодня ‧',
+        },
+      ]"
+    >
       {{ date.day }} {{ date.month }} ‧ {{ isTodayOrTomorrow() }}
       {{ date.dayOfWeek }}
     </div>
 
     <div class="flex flex-col gap-4 my-4">
-      <TaskToDoItem v-for="(task, index) in filteredTasks" :task="task" :key="index" />
+      <TaskToDoItem
+        v-for="(task, index) in filteredTasks"
+        :task="task"
+        :key="index"
+      />
     </div>
 
     <div v-if="!isFormOpen">

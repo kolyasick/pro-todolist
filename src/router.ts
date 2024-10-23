@@ -1,8 +1,7 @@
+// router.ts
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "./stores/auth.store";
 import auth from "./pages/auth.vue";
 import index from "./pages/index.vue";
-
 
 const routes = [
   { path: "/auth", component: auth },
@@ -14,5 +13,17 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach(async (to, from, next) => {
+  const isLoggedIn =
+    localStorage.getItem("sb-hbybmfsifmxbzwtakvac-auth-token") ?? false;
+
+  if (to.path === "/" && !isLoggedIn) {
+    next("/auth");
+  } else if (to.path === "/auth" && isLoggedIn) {
+    next("/");
+  } else {
+    next();
+  }
+});
 
 export default router;

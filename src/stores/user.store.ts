@@ -7,6 +7,10 @@ import {
 } from "@/utils/validationUtils";
 import type { AuthResponse, User, UserResponse } from "@supabase/supabase-js";
 import { defineStore } from "pinia";
+import { useDateStore } from "./date.store";
+import type { ITask } from "@/date.interface";
+import { v4 as uuidv4 } from "uuid";
+
 interface IErrors {
   email: string | null;
   password: string | null;
@@ -14,16 +18,15 @@ interface IErrors {
   other: string | null;
 }
 
-export const useAuthStore = defineStore("auth", {
+interface IUser extends User {
+  tasks?: ITask[];
+}
+
+export const useUserStore = defineStore("auth", {
   state: () => ({
-    user: null as User | null,
+    user: null as IUser | null,
     status: false as boolean,
-    errors: {
-      email: null,
-      password: null,
-      name: null,
-      other: null,
-    } as IErrors,
+    errors: {} as IErrors,
     isLoading: false as boolean,
   }),
   actions: {
@@ -39,13 +42,14 @@ export const useAuthStore = defineStore("auth", {
       });
     },
     async register(email: string, password: string, name: string) {
-      if (
-        !validateName(name, this.errors) ||
-        !validateEmail(email, this.errors) ||
-        !validatePassword(password, this.errors)
-      ) {
+      this.errors.name = validateName(name);
+      this.errors.email = validateEmail(email);
+      this.errors.password = validatePassword(password);
+
+      if (this.errors.name || this.errors.email || this.errors.password) {
         return;
       }
+
       try {
         this.clearErrors();
         this.isLoading = true;
@@ -74,10 +78,10 @@ export const useAuthStore = defineStore("auth", {
       }
     },
     async login(email: string, password: string) {
-      if (
-        !validateEmail(email, this.errors) ||
-        !validatePassword(password, this.errors)
-      ) {
+      this.errors.email = validateEmail(email);
+      this.errors.password = validatePassword(password);
+
+      if (this.errors.name || this.errors.email || this.errors.password) {
         return;
       }
 
@@ -97,6 +101,7 @@ export const useAuthStore = defineStore("auth", {
         }
 
         this.set(true, data.user);
+        await this.getUser();
         return router.push("/");
       } catch (error: any) {
         this.errors.other = "Unexpected error";
@@ -122,12 +127,70 @@ export const useAuthStore = defineStore("auth", {
         const { data, error }: UserResponse = await supabase.auth.getUser();
 
         if (error) return;
+        const { data: tasks } = await supabase
+          .from("task")
+          .select("*")
+          .eq("is_done", false)
+          .eq("user_id", data.user.id);
 
-        this.set(true, data.user);
+        const userData = {
+          ...data.user,
+          tasks: tasks as ITask[] | [],
+        };
+
+        this.set(true, userData);
       } catch (error) {
         console.log(error);
       } finally {
         this.isLoading = false;
+      }
+    },
+
+    async addTask(title: string, description: string, date: Date) {
+      const id = uuidv4();
+
+      if (this.user?.tasks) {
+        this.user.tasks.push({
+          id: id,
+          title: title,
+          description: description,
+          date: date,
+          is_done: false,
+          created_at: new Date(),
+        });
+      }
+
+      const { data, error } = await supabase.from("task").insert({
+        id: id,
+        title: title,
+        description: description,
+        date:
+          date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1) +
+          "-" +
+          date.getDate(),
+        user_id: useUserStore().user?.id,
+      });
+
+      if (error) {
+        console.log(error);
+      }
+    },
+
+    async updateTask(task: ITask) {
+      if (!this.user) return;
+
+      this.user.tasks = this.user.tasks?.filter((t) => t.id !== task.id);
+
+      const { data, error } = await supabase
+        .from("task")
+        .update({ is_done: true })
+        .eq("id", task.id);
+
+        
+      if (error) {
+        console.log(error);
       }
     },
   },
